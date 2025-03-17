@@ -1,0 +1,28 @@
+name: release-build
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+     - name: Checkout repository
+       uses: actions/checkout@v4
+
+     - name: Install dependencies
+       run: sudo apt update && sudo apt install -y build-essential
+
+     - name: Build
+       run: make
+
+     - name: Archive artifacts
+       run: tar -czvf secure_string.tar.gz secure_string
+
+     - name: Upload to release
+       uses: softprops/action-gh-release@v2
+       with:
+         files: secure_string.tar.gz
+         token: ${{ secrets.GITHUB_TOKEN }}
+
